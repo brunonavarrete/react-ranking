@@ -22,22 +22,26 @@ var Recipes = [
 function Card(props){
 	var starsState = [];
 	for (let i = 0; i < props.ranking; i++) {
-		starsState.push( <span className="fas fa-star" key={i}></span> );
+		starsState.push( <span className="fas fa-star text-warning mr-1" key={i}></span> );
 	};
 
 	var starsGiven = [];
 	for (let i = 0; i < 5; i++) {
-		starsGiven.push( <span className="fas fa-star" key={i}></span> );
+		starsGiven.push( <span className="fas fa-star text-muted mr-1" key={i}></span> );
 	};	
 
 	return (
-		<div className="card-frame">
-			<h2>{ props.title }</h2>
-			<p>{ props.summary }</p>
-			<div className="ranked">{ starsState }&nbsp;{ props.ranking }</div>
-			<p>Do you agree? Rate it yourself!</p>
-			<div className="rank">
-				{ starsGiven }
+		<div className="card">
+			<div className="card-body d-flex flex-column">
+				<h2 className="card-title h4">{ props.title }</h2>
+				<p className="card-text">{ props.summary }</p>
+				<div className="mt-auto">{ starsState }&nbsp;{ props.ranking }</div>
+			</div>
+			<div className="card-footer alert-success">
+				<p>Do you agree? Rate it yourself!</p>
+				<div className="rank">
+					{ starsGiven }
+				</div>
 			</div>
 		</div>
 	);
@@ -66,16 +70,18 @@ var Application = React.createClass({
 	},
 	render: function(){
 		return (
-			<div className="container">
-				{ this.state.recipes.map(function(recipe,index){
-					return (
-						<Card 
-							key={ recipe.id }
-							title={ recipe.title } 
-							summary={ recipe.summary } 
-							ranking={ recipe.ranking } />
-					);
-				}.bind(this))}
+			<div className="container py-5">
+				<div className="card-group">
+					{ this.state.recipes.map(function(recipe,index){
+						return (
+							<Card 
+								key={ recipe.id }
+								title={ recipe.title } 
+								summary={ recipe.summary } 
+								ranking={ recipe.ranking } />
+						);
+					}.bind(this))}
+				</div>
 			</div>
 		);
 	},
