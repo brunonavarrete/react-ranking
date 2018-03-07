@@ -3,94 +3,110 @@ var Recipes = [
 		id: 1,
 		title: 'Smothered Chicken with Mushrooms',
 		summary: 'A play on the chain restaurant specialty of the same name - a bit healthier and just as satisfying!',
-		ranking: 4.5
+		grades: [4,5],
 	},
 	{
 		id: 2,
 		title: 'Slow Cooker Belgian Chicken Booyah',
 		summary: 'This is a booyah recipe that is adapted from originally a 50 gallon recipe cooked in large 55 gallon cast-iron kettles with a wood fire, most often at church picnics in northeastern Wisconsin.',
-		ranking: 4
+		grades: [4,4],
 	},
 	{
 		id: 3,
 		title: 'Colleen\'s Slow Cooker Jambalaya',
 		summary: 'This recipe came about from a lot of experimenting over the years. My family and friends like this version the best. Serve over cooked rice.',
-		ranking: 4.5
+		grades: [4,5],
 	},
 ];
 
 function Star(props){
 	return (
-		<span onClick={ props.setRank } className="click-star text-muted mr-1">★</span>
+		<span onClick={ props.setGrade } className="click-star text-muted mr-1">★</span>
 	)
 }
 
 Star.propTypes = {
-	setRank: React.PropTypes.func.isRequired,
+	setGrade: React.PropTypes.func.isRequired,
 }
 
-var Ranker = React.createClass({
+function Ranker(props) {
+	var possibleStars = [];
+	for (let i = 1; i < 6; i++) {
+		possibleStars.push( 
+			<Star 
+			key={i} 
+			setGrade={ function(){props.setRank(i)} } /> 
+		);
+		/**/
+	};
+	return (
+		<div className={'rank ' + props.grade}>
+			<p>{ props.tagline }</p>
+			{ possibleStars } { props.grade }
+		</div>
+	)
+}
+
+Ranker.propTypes = {
+	tagline: React.PropTypes.string.isRequired,
+	setRank: React.PropTypes.func,
+	grade: React.PropTypes.number
+}
+
+var Card = React.createClass({
 	propTypes: {
-		tagline: React.PropTypes.string.isRequired,
-		rank: React.PropTypes.number.isRequired
-	},
-	getDefaultProps: function(){
-		return {
-			tagline: 'Rate it!',
-		}
+		title: React.PropTypes.string.isRequired,
+		summary: React.PropTypes.string.isRequired,
+		initialGrades: React.PropTypes.array.isRequired,
+		isGraded: React.PropTypes.bool,
+		newGrade: React.PropTypes.number,
 	},
 	getInitialState: function(){
 		return {
-			rank: 0
+			gradesArray: this.props.initialGrades,
+			isGraded: this.props.isGraded,
+			newGrade: 0
 		}
 	},
-	setRank: function(val){
-		this.state.rank = val;
+	addRank: function(grade){
+		if( this.state.isGraded ){
+			this.state.gradesArray.splice(-1,1);
+		} else {
+			this.state.isGraded = true;
+		}
+		this.state.gradesArray.push(grade);
+		this.state.newGrade = grade;
 		this.setState(this.state);
 	},
 	render: function(){
-		var possibleStars = [];
-		for (let i = 1; i < 6; i++) {
-			possibleStars.push( 
-				<Star 
-				key={i} 
-				setRank={ function(){ this.setRank(i) }.bind(this) } /> 
-			);
+		var avg = 0;
+		for (var i = 0; i < this.state.gradesArray.length; i++) {
+			avg += this.state.gradesArray[i];
+		}
+		avg = avg/this.state.gradesArray.length;
+		var ranking = Math.round( avg * 10 ) / 10;
+		var starsState = [];
+		for (let i = 0; i < ranking; i++) {
+			starsState.push( <span className="text-warning mr-1" key={i}>★</span> );
 		};
+
 		return (
-			<div className="card-footer alert-success">
-				<p>{ this.props.tagline }</p>
-				<div className="rank">
-					{ possibleStars }{ this.state.rank }
+			<div className="card">
+				<div className="card-body d-flex flex-column">
+					<h2 className="card-title h4">{ this.props.title }</h2>
+					<p className="card-text">{ this.props.summary }</p>
+					<div className="mt-auto">{ starsState }&nbsp;{ ranking }</div>
+				</div>
+				<div className="card-footer alert-success">
+					<Ranker 
+						tagline="Do you agree? Rate it yourself!" 
+						setRank={ function(grade){ this.addRank(grade); }.bind(this) }
+						grade={ this.state.newGrade } />
 				</div>
 			</div>
-		)
+		);
 	}
 });
-
-function Card(props){
-	var starsState = [];
-	for (let i = 0; i < props.ranking; i++) {
-		starsState.push( <span className="text-warning mr-1" key={i}>★</span> );
-	};
-
-	return (
-		<div className="card">
-			<div className="card-body d-flex flex-column">
-				<h2 className="card-title h4">{ props.title }</h2>
-				<p className="card-text">{ props.summary }</p>
-				<div className="mt-auto">{ starsState }&nbsp;{ props.ranking }</div>
-			</div>
-			<Ranker tagline="Do you agree? Rate it yourself!" rank={0} />
-		</div>
-	);
-}
-
-Card.propTypes = {
-	title: React.PropTypes.string.isRequired,
-	summary: React.PropTypes.string.isRequired,
-	ranking: React.PropTypes.number.isRequired
-}
 
 var Application = React.createClass({
 	propTypes: {
@@ -117,7 +133,8 @@ var Application = React.createClass({
 								key={ recipe.id }
 								title={ recipe.title } 
 								summary={ recipe.summary } 
-								ranking={ recipe.ranking } />
+								initialGrades={ recipe.grades }
+								/>
 						);
 					}.bind(this))}
 				</div>
