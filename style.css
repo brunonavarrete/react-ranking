@@ -1,0 +1,36 @@
+.card-body div p span {
+	font-size: 24px;
+}
+.rank p {
+	margin-bottom: 0;
+}
+.rank span {
+	font-size: 20px;
+	color: silver;
+	cursor: pointer;
+}
+.rank--1 span:nth-of-type(1){
+	color: #004085;
+} 
+.rank--2 span:nth-of-type(1),
+.rank--2 span:nth-of-type(2){
+	color: #004085;
+}
+.rank--3 span:nth-of-type(1),
+.rank--3 span:nth-of-type(2),
+.rank--3 span:nth-of-type(3){
+	color: #004085;
+}
+.rank--4 span:nth-of-type(1),
+.rank--4 span:nth-of-type(2),
+.rank--4 span:nth-of-type(3),
+.rank--4 span:nth-of-type(4){
+	color: #004085;
+}
+.rank--5 span:nth-of-type(1),
+.rank--5 span:nth-of-type(2),
+.rank--5 span:nth-of-type(3),
+.rank--5 span:nth-of-type(4),
+.rank--5 span:nth-of-type(5){
+	color: #004085;
+}
