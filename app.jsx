@@ -25,11 +25,6 @@ function Card(props){
 		starsState.push( <span className="fas fa-star text-warning mr-1" key={i}></span> );
 	};
 
-	var starsGiven = [];
-	for (let i = 0; i < 5; i++) {
-		starsGiven.push( <span className="fas fa-star text-muted mr-1" key={i}></span> );
-	};	
-
 	return (
 		<div className="card">
 			<div className="card-body d-flex flex-column">
@@ -37,15 +32,44 @@ function Card(props){
 				<p className="card-text">{ props.summary }</p>
 				<div className="mt-auto">{ starsState }&nbsp;{ props.ranking }</div>
 			</div>
-			<div className="card-footer alert-success">
-				<p>Do you agree? Rate it yourself!</p>
-				<div className="rank">
-					{ starsGiven }
-				</div>
-			</div>
+			<Ranker tagline="Do you agree? Rate it yourself!" />
 		</div>
 	);
 }
+
+var Ranker = React.createClass({
+	propTypes: {
+		tagline: React.PropTypes.string.isRequired,
+		rank: React.PropTypes.number.isRequired
+	},
+	getDefaultProps: function(){
+		return {
+			tagline: 'Rate it!',
+		}
+	},
+	getInitialState: function(){
+		return {
+			rank: 0
+		}
+	},
+	setRank: function(rank){
+		alert(rank);
+	},
+	render: function(){
+		var possibleStars = [];
+		for (let i = 0; i < 5; i++) {
+			possibleStars.push( <span className="fas fa-star text-muted mr-1" key={i}></span> );
+		};
+		return (
+			<div className="card-footer alert-success">
+				<p>{ this.props.tagline }</p>
+				<div className="rank">
+					{ possibleStars }{ this.state.rank }
+				</div>
+			</div>
+		)
+	}
+});
 
 Card.propTypes = {
 	title: React.PropTypes.string.isRequired,
