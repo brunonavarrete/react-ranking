@@ -19,22 +19,14 @@ var Recipes = [
 	},
 ];
 
-function Card(props){
-	var starsState = [];
-	for (let i = 0; i < props.ranking; i++) {
-		starsState.push( <span className="fas fa-star text-warning mr-1" key={i}></span> );
-	};
-
+function Star(props){
 	return (
-		<div className="card">
-			<div className="card-body d-flex flex-column">
-				<h2 className="card-title h4">{ props.title }</h2>
-				<p className="card-text">{ props.summary }</p>
-				<div className="mt-auto">{ starsState }&nbsp;{ props.ranking }</div>
-			</div>
-			<Ranker tagline="Do you agree? Rate it yourself!" />
-		</div>
-	);
+		<span onClick={ props.setRank } className="click-star text-muted mr-1">★</span>
+	)
+}
+
+Star.propTypes = {
+	setRank: React.PropTypes.func.isRequired,
 }
 
 var Ranker = React.createClass({
@@ -52,13 +44,18 @@ var Ranker = React.createClass({
 			rank: 0
 		}
 	},
-	setRank: function(rank){
-		alert(rank);
+	setRank: function(val){
+		this.state.rank = val;
+		this.setState(this.state);
 	},
 	render: function(){
 		var possibleStars = [];
-		for (let i = 0; i < 5; i++) {
-			possibleStars.push( <span className="fas fa-star text-muted mr-1" key={i}></span> );
+		for (let i = 1; i < 6; i++) {
+			possibleStars.push( 
+				<Star 
+				key={i} 
+				setRank={ function(){ this.setRank(i) }.bind(this) } /> 
+			);
 		};
 		return (
 			<div className="card-footer alert-success">
@@ -70,6 +67,24 @@ var Ranker = React.createClass({
 		)
 	}
 });
+
+function Card(props){
+	var starsState = [];
+	for (let i = 0; i < props.ranking; i++) {
+		starsState.push( <span className="text-warning mr-1" key={i}>★</span> );
+	};
+
+	return (
+		<div className="card">
+			<div className="card-body d-flex flex-column">
+				<h2 className="card-title h4">{ props.title }</h2>
+				<p className="card-text">{ props.summary }</p>
+				<div className="mt-auto">{ starsState }&nbsp;{ props.ranking }</div>
+			</div>
+			<Ranker tagline="Do you agree? Rate it yourself!" rank={0} />
+		</div>
+	);
+}
 
 Card.propTypes = {
 	title: React.PropTypes.string.isRequired,
