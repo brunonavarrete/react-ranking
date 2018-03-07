@@ -139,7 +139,7 @@ var Card = React.createClass({
 		};
 
 		return (
-			<div className="card px-0 col-xl-3">
+			<div className="card px-0">
 				<div className="card-body d-flex flex-column">
 					<h2 className="card-title h4">{ this.props.title }</h2>
 					<p className="card-text">{ this.props.summary }</p>
