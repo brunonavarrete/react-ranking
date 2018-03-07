@@ -3,25 +3,25 @@ var Recipes = [
 		id: 1,
 		title: 'Smothered Chicken with Mushrooms',
 		summary: 'A play on the chain restaurant specialty of the same name - a bit healthier and just as satisfying!',
-		grades: [4,5],
+		grades: [4,1,2,2],
 	},
 	{
 		id: 2,
 		title: 'Slow Cooker Belgian Chicken Booyah',
 		summary: 'This is a booyah recipe that is adapted from originally a 50 gallon recipe cooked in large 55 gallon cast-iron kettles with a wood fire, most often at church picnics in northeastern Wisconsin.',
-		grades: [4,4],
+		grades: [4,4,5,4,5,2,3,4],
 	},
 	{
 		id: 3,
 		title: 'Colleen\'s Slow Cooker Jambalaya',
 		summary: 'This recipe came about from a lot of experimenting over the years. My family and friends like this version the best. Serve over cooked rice.',
-		grades: [4,5],
+		grades: [4,5,3,4,3,5,1,4],
 	},
 ];
 
 function Star(props){
 	return (
-		<span onClick={ props.setGrade } className="click-star text-muted mr-1">★</span>
+		<span onClick={ props.setGrade } className="mr-1">★</span>
 	)
 }
 
@@ -40,9 +40,9 @@ function Ranker(props) {
 		/**/
 	};
 	return (
-		<div className={'rank ' + props.grade}>
+		<div className={'d-flex align-items-center rank rank--' + props.grade}>
 			<p>{ props.tagline }</p>
-			{ possibleStars } { props.grade }
+			<p>{ possibleStars }</p>
 		</div>
 	)
 }
@@ -86,7 +86,7 @@ var Card = React.createClass({
 		avg = avg/this.state.gradesArray.length;
 		var ranking = Math.round( avg * 10 ) / 10;
 		var starsState = [];
-		for (let i = 0; i < ranking; i++) {
+		for (let i = 0; i < Math.round(ranking); i++) {
 			starsState.push( <span className="text-warning mr-1" key={i}>★</span> );
 		};
 
@@ -95,9 +95,13 @@ var Card = React.createClass({
 				<div className="card-body d-flex flex-column">
 					<h2 className="card-title h4">{ this.props.title }</h2>
 					<p className="card-text">{ this.props.summary }</p>
-					<div className="mt-auto">{ starsState }&nbsp;{ ranking }</div>
+					<div className="mt-auto ml-auto">
+						<p className="d-flex align-items-center mb-0 text-right">
+							<small className="pr-2 text-right">({ ranking })</small> { starsState }
+						</p>
+					</div>
 				</div>
-				<div className="card-footer alert-success">
+				<div className="card-footer alert-primary">
 					<Ranker 
 						tagline="Do you agree? Rate it yourself!" 
 						setRank={ function(grade){ this.addRank(grade); }.bind(this) }
