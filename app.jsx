@@ -43,11 +43,15 @@ var RecipeForm = React.createClass({
 	},
 	onSubmit: function(e){
 		e.preventDefault();
-		this.props.onSave( this.state );
-		this.setState({
-			title: '',
-			summary: '',
-		});
+		if( this.state.title !== '' && this.state.summary !== '' ){
+			this.props.onSave( this.state );
+			this.setState({
+				title: '',
+				summary: '',
+			});
+		} else {
+			alert( 'Title and summary are required ');
+		}
 	},
 	render: function(){
 		return(
@@ -134,8 +138,11 @@ var Card = React.createClass({
 		avg = avg/this.state.gradesArray.length;
 		var ranking = Math.round( avg * 10 ) / 10;
 		var starsState = [];
+		
 		for (let i = 0; i < Math.round(ranking); i++) {
-			starsState.push( <span className="text-warning mr-1" key={i}>★</span> );
+			starsState.push( 
+				<span className="text-warning mr-1" key={i}>★</span>
+			);
 		};
 
 		return (
@@ -178,7 +185,7 @@ var Application = React.createClass({
 	saveRecipe: function(recipe){
 		var key = this.state.recipes.length + 1;
 		recipe.id = key;
-		recipe.grades = [1];
+		recipe.grades = [0];
 		console.log(recipe);
 		this.state.recipes.push(recipe);
 		this.setState(this.state);
